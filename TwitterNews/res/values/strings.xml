@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Twitter News</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- APP STRINGS -->
+
+    <string name="loginpage_info">Want to hack some news?\n Start by signing in with your twitter account</string>
+    <string name="type_topic">Type a topic to get your news recommendations</string>
+    <string name="progress_topic">Just a sec please \nBurning bits for a moment </string>
+    <string name="go_read">Go Read\'em All</string>
+    <string name="chart">Chart</string>
+    <string name="pen">Keyword</string>
+    
+    <string name="boring">Boring</string>
+    <string name="cool">Cool</string>
+
+    <!-- TWITTER -->
+    <string name="authentication_done_now_post_tweet_or_image_text"> Your app is authenticated. Now  you can post tweet/image on twitter. </string>
+    <string name="please_wait_title"> Twitter API </string>
+    <string name="authenticating"> Authenticating Please Wait </string> 
+
+    <!-- toast --> 
+
+</resources>
