@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.kaplandroid.twitternews.model.Feedback;
 import com.kaplandroid.twitternews.model.TweetForDB;
 
 /**
@@ -202,6 +203,48 @@ public class MobilikeDBHelper extends SQLiteOpenHelper {
 		}
 
 		return -1;
+	}
+
+	public List<Feedback> getFeedbackTotals() {
+		List<Feedback> feedbacks = new ArrayList<Feedback>();
+		SQLiteDatabase db = this.getWritableDatabase();
+
+		String sqlQuery = "SELECT count(bid) as total, " + TABLE_FEEDBACK + ".name FROM " + TABLE_TWEET_HAS_FEEDBACK
+				+ ", " + TABLE_FEEDBACK + " WHERE " + TABLE_FEEDBACK + ".id=" + TABLE_TWEET_HAS_FEEDBACK
+				+ ".fid group by fid";
+		Cursor cursor = db.rawQuery(sqlQuery, null);
+
+		while (cursor.moveToNext()) {
+			Feedback feedback = new Feedback(cursor.getInt(0), cursor.getString(1));
+			feedbacks.add(feedback);
+		}
+
+		return feedbacks;
+	}
+
+	public List<Feedback> getFeedbackTotalsBySourceID(int sourceID) {
+		List<Feedback> feedbacks = new ArrayList<Feedback>();
+		SQLiteDatabase db = this.getWritableDatabase();
+
+		String sqlQuery = "SELECT count(bid) as total, " + TABLE_FEEDBACK
+				+ ".name "
+
+				//
+				+ " FROM " + TABLE_TWEET_HAS_FEEDBACK + ", " + TABLE_FEEDBACK + ", "
+				+ TABLE_SOURCE
+				//
+
+				+ " WHERE " + TABLE_FEEDBACK + ".id==" + TABLE_TWEET_HAS_FEEDBACK + ".fid and "
+				+ TABLE_TWEET_HAS_FEEDBACK + ".dbID==" + TABLE_TWEET_HAS_SOURCE + ".dbID and " + TABLE_TWEET_HAS_SOURCE
+				+ ".dbID==" + sourceID + " group by fid";
+		Cursor cursor = db.rawQuery(sqlQuery, null);
+
+		while (cursor.moveToNext()) {
+			Feedback feedback = new Feedback(cursor.getInt(0), cursor.getString(1));
+			feedbacks.add(feedback);
+		}
+
+		return feedbacks;
 	}
 
 	public void clearTweets() {
