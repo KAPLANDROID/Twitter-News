@@ -210,8 +210,8 @@ public class MobilikeDBHelper extends SQLiteOpenHelper {
 		SQLiteDatabase db = this.getWritableDatabase();
 
 		String sqlQuery = "SELECT count(bid) as total, " + TABLE_FEEDBACK + ".name FROM " + TABLE_TWEET_HAS_FEEDBACK
-				+ ", " + TABLE_FEEDBACK + " WHERE " + TABLE_FEEDBACK + ".id=" + TABLE_TWEET_HAS_FEEDBACK
-				+ ".fid group by fid";
+				+ ", " + TABLE_FEEDBACK + " WHERE " + TABLE_FEEDBACK + ".feedbackID=" + TABLE_TWEET_HAS_FEEDBACK
+				+ ".feedbackID group by feedbackID";
 		Cursor cursor = db.rawQuery(sqlQuery, null);
 
 		while (cursor.moveToNext()) {
@@ -234,9 +234,9 @@ public class MobilikeDBHelper extends SQLiteOpenHelper {
 				+ TABLE_SOURCE
 				//
 
-				+ " WHERE " + TABLE_FEEDBACK + ".id==" + TABLE_TWEET_HAS_FEEDBACK + ".fid and "
+				+ " WHERE " + TABLE_FEEDBACK + ".feedbackID==" + TABLE_TWEET_HAS_FEEDBACK + ".feedbackID and "
 				+ TABLE_TWEET_HAS_FEEDBACK + ".dbID==" + TABLE_TWEET_HAS_SOURCE + ".dbID and " + TABLE_TWEET_HAS_SOURCE
-				+ ".dbID==" + sourceID + " group by fid";
+				+ ".dbID==" + sourceID + " group by feedbackID";
 		Cursor cursor = db.rawQuery(sqlQuery, null);
 
 		while (cursor.moveToNext()) {
