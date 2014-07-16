@@ -1,4 +1,4 @@
-package com.kaplandroid.twitternews.ui;
+package com.kaplandroid.twitternews.ui.search;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -79,6 +79,7 @@ public class SearchKeywordActivity extends Activity implements OnClickListener {
 
 			// TO.DO save keyword
 
+			AppData.getInstance().setLastSinceId(null);
 			AppData.getInstance().setLastKeyword(etSearchKeyword.getText().toString());
 
 			//

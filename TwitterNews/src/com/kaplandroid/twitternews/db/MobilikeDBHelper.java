@@ -179,7 +179,7 @@ public class MobilikeDBHelper extends SQLiteOpenHelper {
 		return -1;
 	}
 
-	public String getWeblinkBydbID(int dbID) {
+	public String getWeblinkBydbIDIfAvaible(int dbID) {
 		SQLiteDatabase db = this.getWritableDatabase();
 
 		String sqlQuery = "SELECT  weblink FROM " + TABLE_TWEET + " where dbID=='" + dbID + "'";
@@ -203,6 +203,19 @@ public class MobilikeDBHelper extends SQLiteOpenHelper {
 		}
 
 		return -1;
+	}
+
+	public int getTotalFeedbackCount() {
+		SQLiteDatabase db = this.getWritableDatabase();
+
+		String sqlQuery = "SELECT  count(feedbackID) FROM " + TABLE_TWEET_HAS_FEEDBACK;
+		Cursor cursor = db.rawQuery(sqlQuery, null);
+
+		while (cursor.moveToNext()) {
+			return cursor.getInt(0);
+		}
+
+		return 0;
 	}
 
 	public List<Feedback> getFeedbackTotals() {

@@ -13,6 +13,7 @@ import com.kaplandroid.twitternews.AppData;
 import com.kaplandroid.twitternews.R;
 import com.kaplandroid.twitternews.db.MobilikeDBHelper;
 import com.kaplandroid.twitternews.twitterapi.TwitterLoginActivity;
+import com.kaplandroid.twitternews.ui.search.SearchKeywordActivity;
 
 /**
  * Main Activity
