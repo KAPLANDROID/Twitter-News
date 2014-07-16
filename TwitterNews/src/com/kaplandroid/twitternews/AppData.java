@@ -17,6 +17,8 @@ public class AppData {
 
 	private static AppData ref;
 
+	private Long lastSinceId;
+
 	private AppData() {
 
 	}
@@ -45,6 +47,14 @@ public class AppData {
 
 	public void increaseNewsIDBy1() {
 		this.lastNewsID++;
+	}
+
+	public Long getLastSinceId() {
+		return lastSinceId;
+	}
+
+	public void setLastSinceId(Long lastSinceId) {
+		this.lastSinceId = lastSinceId;
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.kaplandroid.twitternews.ui;
+package com.kaplandroid.twitternews.ui.search;
 
 import java.util.List;
 
@@ -17,6 +17,7 @@ import com.kaplandroid.twitternews.db.MobilikeDBHelper;
 import com.kaplandroid.twitternews.model.TweetForDB;
 import com.kaplandroid.twitternews.twitterapi.TwitterMethods;
 import com.kaplandroid.twitternews.twitterapi.TwitterMethods.TwitterSearchCallback;
+import com.kaplandroid.twitternews.ui.reader.ReadNewsActivity;
 
 /**
  * 
@@ -54,7 +55,7 @@ public class SearchProgressActivity extends Activity {
 		// Source, Feedback and relation tables stays same.
 
 		TwitterMethods.searchNews(SearchProgressActivity.this, SearchProgressActivity.this, AppData.getInstance()
-				.getLastKeyword(), new TwitterSearchCallback() {
+				.getLastKeyword(), AppData.getInstance().getLastSinceId(), new TwitterSearchCallback() {
 
 			@Override
 			public void onFinsihed(Boolean success, final List<Status> list) {
@@ -71,6 +72,11 @@ public class SearchProgressActivity extends Activity {
 								pbTwitterSearch.setMax(list.size());
 							}
 						});
+
+						try {
+							AppData.getInstance().setLastSinceId(list.get(0).getId());
+						} catch (Exception e) {
+						}
 
 						for (int i = 0; i < list.size(); i++) {
 							Status currentTweet = list.get(i);
@@ -97,7 +103,7 @@ public class SearchProgressActivity extends Activity {
 								// System.out.println(dbHelper.getTotalTweetCount());
 								// System.out.println(currentTweet.getUser().getScreenName());
 							} else {
-								// System.out.println(false);
+								System.out.println(false);
 							}
 							// insert process for new tweets done
 						}

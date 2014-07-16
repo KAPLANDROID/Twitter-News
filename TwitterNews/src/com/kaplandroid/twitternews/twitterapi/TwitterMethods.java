@@ -22,6 +22,8 @@ import android.content.Context;
  */
 public class TwitterMethods {
 
+	private static final String RECENT = "recent";
+
 	public TwitterMethods() {
 	}
 
@@ -42,14 +44,11 @@ public class TwitterMethods {
 
 		new Thread(new Runnable() {
 
-			private double x;
-
 			@Override
 			public void run() {
 				boolean success = true;
 				try {
-					x = Math.random();
-					twitter.updateStatus(message + " " + x);
+					twitter.updateStatus(message);
 				} catch (TwitterException e) {
 					e.printStackTrace();
 					success = false;
@@ -69,7 +68,7 @@ public class TwitterMethods {
 	}
 
 	public static void searchNews(Context context, final Activity callingActivity, final String keyword,
-			final TwitterSearchCallback postResponse) {
+			final Long sinceId, final TwitterSearchCallback postResponse) {
 		if (!TwitterLoginActivity.isActive(context)) {
 			postResponse.onFinsihed(false, null);
 			return;
@@ -90,11 +89,13 @@ public class TwitterMethods {
 				try {
 
 					Query query = new Query();
-					query.count(100);
+					query.count(10);
 					query.setQuery(keyword);
-					query.resultType("recent");
+					query.resultType(RECENT);
+					if (sinceId != null) {
+						query.setSinceId(sinceId);
+					}
 
-					// System.out.println(query);
 					final QueryResult queryResult = twitter.search(query);
 
 					callingActivity.runOnUiThread(new Runnable() {

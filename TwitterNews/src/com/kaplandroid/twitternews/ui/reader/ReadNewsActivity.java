@@ -1,6 +1,7 @@
-package com.kaplandroid.twitternews.ui;
+package com.kaplandroid.twitternews.ui.reader;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import com.kaplandroid.twitternews.AppData;
 import com.kaplandroid.twitternews.R;
 import com.kaplandroid.twitternews.db.MobilikeDBHelper;
+import com.kaplandroid.twitternews.ui.search.SearchKeywordActivity;
 
 /**
  * 
@@ -58,10 +60,24 @@ public class ReadNewsActivity extends Activity implements OnClickListener {
 		webSettings.setBuiltInZoomControls(true);
 
 		wvNewsRead.setWebViewClient(new Callback());
-		wvNewsRead.loadUrl(dbHelper.getWeblinkBydbID(AppData.getInstance().getLastNewsID()));
 
-		Toast.makeText(ReadNewsActivity.this, "Tweet ID: " + AppData.getInstance().getLastNewsID(), Toast.LENGTH_SHORT)
-				.show();
+		String currentURL = dbHelper.getWeblinkBydbIDIfAvaible(AppData.getInstance().getLastNewsID());
+
+		// if empty string found, that means we read all of news.
+		if (currentURL.length() != 0) {
+
+			wvNewsRead.loadUrl(currentURL);
+
+			Toast.makeText(ReadNewsActivity.this, "Tweet ID: " + AppData.getInstance().getLastNewsID(),
+					Toast.LENGTH_SHORT).show();
+		} else {
+
+			// TO.DO Open 2.1 Screen
+
+			startActivity(new Intent(ReadNewsActivity.this, EndOfNewsActivity.class));
+			finish();
+
+		}
 	}
 
 	private class Callback extends WebViewClient {
@@ -77,15 +93,18 @@ public class ReadNewsActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 
 		if (v == btnNewsReadBoring) {
-			dbHelper.insertFeedbackToTweet(AppData.getInstance().getLastNewsID(), AppData.FEEDBACK_BORING);
-			AppData.getInstance().increaseNewsIDBy1();
-			loadNewPage();
+			setFeedback(AppData.FEEDBACK_BORING);
 		} else if (v == btnNewsReadCool) {
-			dbHelper.insertFeedbackToTweet(AppData.getInstance().getLastNewsID(), AppData.FEEDBACK_COOL);
-			AppData.getInstance().increaseNewsIDBy1();
-			loadNewPage();
+			setFeedback(AppData.FEEDBACK_COOL);
 		}
 
+	}
+
+	private void setFeedback(int id) {
+		dbHelper.insertFeedbackToTweet(AppData.getInstance().getLastNewsID(), id);
+
+		AppData.getInstance().increaseNewsIDBy1();
+		loadNewPage();
 	}
 
 	@Override
@@ -96,7 +115,9 @@ public class ReadNewsActivity extends Activity implements OnClickListener {
 
 			Toast.makeText(ReadNewsActivity.this, "TODO open chart activity", Toast.LENGTH_LONG).show();
 		} else if (item.getItemId() == R.id.action_pen) {
-			finish();
+			Intent i = new Intent(this, SearchKeywordActivity.class);
+			i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(i);
 		}
 		return super.onOptionsItemSelected(item);
 
@@ -106,7 +127,7 @@ public class ReadNewsActivity extends Activity implements OnClickListener {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu items for use in the action bar
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.chat_pen_menu, menu);
+		inflater.inflate(R.menu.chart_pen_menu, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 }

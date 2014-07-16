@@ -11,6 +11,10 @@
     <string name="type_topic">Type a topic to get your news recommendations</string>
     <string name="progress_topic">Just a sec please \nBurning bits for a moment </string>
     <string name="go_read">Go Read\'em All</string>
+    <string name="more_recommendations">Want more recommendations?</string>
+    <string name="yes_please">Yes Please</string>
+    <string name="try_another">I will try another topic</string>
+    <string name="total_news_displayed">Total News Displayed</string>
     <string name="chart">Chart</string>
     <string name="pen">Keyword</string>
     
