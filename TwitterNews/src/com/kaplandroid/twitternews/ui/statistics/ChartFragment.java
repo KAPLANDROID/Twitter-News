@@ -1,6 +1,6 @@
 package com.kaplandroid.twitternews.ui.statistics;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
@@ -39,9 +39,9 @@ public class ChartFragment extends Fragment {
 	private GraphicalView mChartView;
 
 	View fragmentContent;
-	ArrayList<ChartModel> list;
+	List<ChartModel> list;
 
-	public static ChartFragment newInstance(ArrayList<ChartModel> list) {
+	public static ChartFragment newInstance(List<ChartModel> list) {
 		ChartFragment fr = new ChartFragment();
 		fr.list = list;
 		return fr;
@@ -53,9 +53,12 @@ public class ChartFragment extends Fragment {
 		mRenderer.setZoomButtonsVisible(true);
 		mRenderer.setStartAngle(180);
 		mRenderer.setDisplayValues(true);
+		LinearLayout layout = (LinearLayout) fragmentContent.findViewById(R.id.chart);
+		mChartView = ChartFactory.getPieChartView(getActivity(), mSeries, mRenderer);
+		layout.addView(mChartView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
 		for (ChartModel item : list) {
-			addNew(item.getName(), item.getValue());
+			addNew(item.getFeedbackName(), item.getTotalCount());
 		}
 
 		return fragmentContent;

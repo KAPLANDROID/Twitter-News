@@ -56,7 +56,7 @@
     <Spinner
         android:id="@+id/spnSource"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp" />
 
@@ -64,7 +64,8 @@
         android:id="@+id/flChartRoot"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="20dp" >
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" >
     </FrameLayout>
 
 </LinearLayout>

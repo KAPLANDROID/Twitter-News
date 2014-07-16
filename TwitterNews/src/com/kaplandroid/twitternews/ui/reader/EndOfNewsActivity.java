@@ -9,11 +9,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.kaplandroid.twitternews.R;
 import com.kaplandroid.twitternews.ui.search.SearchKeywordActivity;
 import com.kaplandroid.twitternews.ui.search.SearchProgressActivity;
+import com.kaplandroid.twitternews.ui.statistics.StatisticMainActivity;
 
 /**
  * 
@@ -60,9 +60,9 @@ public class EndOfNewsActivity extends Activity implements OnClickListener {
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		if (item.getItemId() == R.id.action_chart) {
-			// TODO open chart activity
 
-			Toast.makeText(this, "TODO open chart activity", Toast.LENGTH_LONG).show();
+			startActivity(new Intent(this, StatisticMainActivity.class));
+
 		} else if (item.getItemId() == R.id.action_pen) {
 
 			Intent i = new Intent(this, SearchKeywordActivity.class);

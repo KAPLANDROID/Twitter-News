@@ -10,15 +10,19 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.kaplandroid.twitternews.R;
 import com.kaplandroid.twitternews.db.MobilikeDBHelper;
+import com.kaplandroid.twitternews.model.SourceForDB;
+import com.kaplandroid.twitternews.ui.InfoActivity;
 import com.kaplandroid.twitternews.ui.search.SearchKeywordActivity;
 
 /**
@@ -41,6 +45,10 @@ public class StatisticMainActivity extends ActionBarActivity implements OnChecke
 	FragmentTransaction ft;
 	FragmentManager fm;
 
+	MobilikeDBHelper dbHelper;
+
+	boolean isFirstTime = true;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -58,20 +66,42 @@ public class StatisticMainActivity extends ActionBarActivity implements OnChecke
 		rbFeedback.setOnCheckedChangeListener(this);
 		rbFeedbackBySource.setOnCheckedChangeListener(this);
 
-		MobilikeDBHelper dbHelper = new MobilikeDBHelper(this);
+		dbHelper = new MobilikeDBHelper(this);
 
 		tvTotalNewdRead.setText("" + dbHelper.getTotalFeedbackCount());
 
 		rbSource.setChecked(true);
+
+		ArrayAdapter<SourceForDB> adapter = new ArrayAdapter<SourceForDB>(StatisticMainActivity.this,
+				android.R.layout.simple_spinner_dropdown_item, dbHelper.getAllSources());
+		spnSource.setAdapter(adapter);
+
+		spnSource.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+				if (!isFirstTime) {
+					openFeedbackBySource(((SourceForDB) spnSource.getSelectedItem()).getSourceID());
+
+					System.out.println(spnSource.getSelectedItem());
+
+				}
+				isFirstTime = false;
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+			}
+		});
+
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		if (item.getItemId() == R.id.action_info) {
-			// TODO open info activity
-
-			Toast.makeText(this, "TODO open info activity", Toast.LENGTH_LONG).show();
+			startActivity(new Intent(this, InfoActivity.class));
 		} else if (item.getItemId() == R.id.action_pen) {
 
 			Intent i = new Intent(this, SearchKeywordActivity.class);
@@ -93,13 +123,13 @@ public class StatisticMainActivity extends ActionBarActivity implements OnChecke
 	String checkedColor = "#297ADD";
 	String unCheckedColor = "#d2d2d2";
 
+	ChartFragment source = null;
+	ChartFragment feedback = null;
+	ChartFragment feedbackBySource = null;
+
 	@SuppressWarnings("unused")
 	@Override
 	public void onCheckedChanged(CompoundButton v, boolean isChecked) {
-
-		ChartFragment source = null;
-		ChartFragment feedback = null;
-		ChartFragment feedbackBySource = null;
 
 		rbSource.setBackgroundColor(rbSource.isChecked() ? Color.parseColor(checkedColor) : Color
 				.parseColor(unCheckedColor));
@@ -118,20 +148,8 @@ public class StatisticMainActivity extends ActionBarActivity implements OnChecke
 				fm = getSupportFragmentManager();
 				ft = fm.beginTransaction();
 
-				if (feedback != null) {
-					ft.hide(feedback);
-				}
-				if (feedbackBySource != null) {
-					ft.hide(feedbackBySource);
-				}
-
-				if (source == null) {
-
-					source = ChartFragment.newInstance(null);// TODO
-					ft.add(flID, source);
-				} else {
-					ft.show(source);
-				}
+				source = ChartFragment.newInstance(dbHelper.getSourceTotals());// TO.DO
+				ft.replace(flID, source);
 
 				ft.commitAllowingStateLoss();
 			}
@@ -143,19 +161,8 @@ public class StatisticMainActivity extends ActionBarActivity implements OnChecke
 				fm = getSupportFragmentManager();
 				ft = fm.beginTransaction();
 
-				if (source != null) {
-					ft.hide(source);
-				}
-				if (feedbackBySource != null) {
-					ft.hide(feedbackBySource);
-				}
-
-				if (feedback == null) {
-					feedback = ChartFragment.newInstance(null);// TODO
-					ft.add(flID, feedback);
-				} else {
-					ft.show(feedback);
-				}
+				feedback = ChartFragment.newInstance(dbHelper.getFeedbackTotals());// TO.DO
+				ft.replace(flID, feedback);
 
 				ft.commitAllowingStateLoss();
 			}
@@ -164,24 +171,8 @@ public class StatisticMainActivity extends ActionBarActivity implements OnChecke
 			if (isChecked) {
 				spnSource.setVisibility(View.VISIBLE);
 
-				fm = getSupportFragmentManager();
-				ft = fm.beginTransaction();
+				openFeedbackBySource(((SourceForDB) spnSource.getSelectedItem()).getSourceID()); // TO.DO
 
-				if (source != null) {
-					ft.hide(source);
-				}
-				if (feedback != null) {
-					ft.hide(feedback);
-				}
-
-				if (feedbackBySource == null) {
-					feedbackBySource = ChartFragment.newInstance(null);// TODO
-					ft.add(flID, feedbackBySource);
-				} else {
-					ft.show(feedbackBySource);
-				}
-
-				ft.commitAllowingStateLoss();
 			}
 
 		}
@@ -190,5 +181,16 @@ public class StatisticMainActivity extends ActionBarActivity implements OnChecke
 
 		//
 
+	}
+
+	private void openFeedbackBySource(int sourceID) {
+
+		fm = getSupportFragmentManager();
+		ft = fm.beginTransaction();
+
+		feedbackBySource = ChartFragment.newInstance(dbHelper.getFeedbackTotalsBySourceID(sourceID));// TO.DO
+		ft.replace(flID, feedbackBySource);
+
+		ft.commitAllowingStateLoss();
 	}
 }

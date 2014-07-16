@@ -65,6 +65,11 @@
             android:label="@string/app_name"
             android:screenOrientation="sensorPortrait" >
         </activity>
+        <activity
+            android:name="com.kaplandroid.twitternews.ui.InfoActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="sensorPortrait" >
+        </activity>
     </application>
 
 </manifest>

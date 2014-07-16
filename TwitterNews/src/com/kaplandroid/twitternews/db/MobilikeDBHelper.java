@@ -10,7 +10,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.kaplandroid.twitternews.model.Feedback;
+import com.kaplandroid.twitternews.model.ChartModel;
+import com.kaplandroid.twitternews.model.SourceForDB;
 import com.kaplandroid.twitternews.model.TweetForDB;
 
 /**
@@ -66,7 +67,7 @@ public class MobilikeDBHelper extends SQLiteOpenHelper {
 
 		//
 
-		String sqlTweetHasSource = "CREATE TABLE " + TABLE_TWEET_HAS_SOURCE + "(dbID INTEGER,sourceID INTEGER)";
+		String sqlTweetHasSource = "CREATE TABLE " + TABLE_TWEET_HAS_SOURCE + "(sourceID INTEGER, dbID INTEGER)";
 		Log.d("DBHelper", "SQL : " + sqlTweetHasSource);
 		db.execSQL(sqlTweetHasSource);
 	}
@@ -153,6 +154,20 @@ public class MobilikeDBHelper extends SQLiteOpenHelper {
 		return tweets;
 	}
 
+	public List<SourceForDB> getAllSources() {
+		List<SourceForDB> sources = new ArrayList<SourceForDB>();
+		SQLiteDatabase db = this.getWritableDatabase();
+
+		Cursor cursor = db.query(TABLE_SOURCE, new String[] { "sourceID", "sourceName" }, null, null, null, null, null);
+
+		while (cursor.moveToNext()) {
+			SourceForDB source = new SourceForDB(cursor.getInt(0), cursor.getString(1));
+			sources.add(source);
+		}
+
+		return sources;
+	}
+
 	public int getSourceIDBySourceName(String sourceName) {
 		SQLiteDatabase db = this.getWritableDatabase();
 
@@ -218,42 +233,63 @@ public class MobilikeDBHelper extends SQLiteOpenHelper {
 		return 0;
 	}
 
-	public List<Feedback> getFeedbackTotals() {
-		List<Feedback> feedbacks = new ArrayList<Feedback>();
+	public List<ChartModel> getSourceTotals() {
+		List<ChartModel> sources = new ArrayList<ChartModel>();
 		SQLiteDatabase db = this.getWritableDatabase();
 
-		String sqlQuery = "SELECT count(bid) as total, " + TABLE_FEEDBACK + ".name FROM " + TABLE_TWEET_HAS_FEEDBACK
-				+ ", " + TABLE_FEEDBACK + " WHERE " + TABLE_FEEDBACK + ".feedbackID=" + TABLE_TWEET_HAS_FEEDBACK
-				+ ".feedbackID group by feedbackID";
+		String sqlQuery = "SELECT count(" + TABLE_SOURCE + ".sourceID) , " + TABLE_SOURCE + ".sourceName FROM "
+				+ TABLE_TWEET_HAS_SOURCE + ", " + TABLE_SOURCE + " WHERE " + TABLE_SOURCE + ".sourceID=="
+				+ TABLE_TWEET_HAS_SOURCE + ".sourceID group by " + TABLE_SOURCE + ".sourceID";
 		Cursor cursor = db.rawQuery(sqlQuery, null);
 
 		while (cursor.moveToNext()) {
-			Feedback feedback = new Feedback(cursor.getInt(0), cursor.getString(1));
+			ChartModel source = new ChartModel(cursor.getInt(0), cursor.getString(1));
+			sources.add(source);
+		}
+
+		return sources;
+	}
+
+	public List<ChartModel> getFeedbackTotals() {
+		List<ChartModel> feedbacks = new ArrayList<ChartModel>();
+		SQLiteDatabase db = this.getWritableDatabase();
+
+		String sqlQuery = "SELECT count(" + TABLE_FEEDBACK + ".feedbackID), " + TABLE_FEEDBACK + ".feedbackName "
+
+		+ "FROM " + TABLE_TWEET_HAS_FEEDBACK + ", " + TABLE_FEEDBACK
+
+		+ " WHERE " + TABLE_FEEDBACK + ".feedbackID==" + TABLE_TWEET_HAS_FEEDBACK + ".feedbackID group by "
+				+ TABLE_FEEDBACK + ".feedbackID";
+		Cursor cursor = db.rawQuery(sqlQuery, null);
+
+		while (cursor.moveToNext()) {
+			ChartModel feedback = new ChartModel(cursor.getInt(0), cursor.getString(1));
 			feedbacks.add(feedback);
 		}
 
 		return feedbacks;
 	}
 
-	public List<Feedback> getFeedbackTotalsBySourceID(int sourceID) {
-		List<Feedback> feedbacks = new ArrayList<Feedback>();
+	public List<ChartModel> getFeedbackTotalsBySourceID(int sourceID) {
+		List<ChartModel> feedbacks = new ArrayList<ChartModel>();
 		SQLiteDatabase db = this.getWritableDatabase();
 
-		String sqlQuery = "SELECT count(bid) as total, " + TABLE_FEEDBACK
-				+ ".name "
+		String sqlQuery = "SELECT count(" + TABLE_FEEDBACK + ".feedbackID), " + TABLE_FEEDBACK
+				+ ".feedbackName "
 
 				//
 				+ " FROM " + TABLE_TWEET_HAS_FEEDBACK + ", " + TABLE_FEEDBACK + ", "
-				+ TABLE_SOURCE
+				+ TABLE_TWEET_HAS_SOURCE
 				//
 
 				+ " WHERE " + TABLE_FEEDBACK + ".feedbackID==" + TABLE_TWEET_HAS_FEEDBACK + ".feedbackID and "
 				+ TABLE_TWEET_HAS_FEEDBACK + ".dbID==" + TABLE_TWEET_HAS_SOURCE + ".dbID and " + TABLE_TWEET_HAS_SOURCE
-				+ ".dbID==" + sourceID + " group by feedbackID";
+				+ ".sourceID==" + sourceID + " group by  " + TABLE_FEEDBACK + ".feedbackID";
+
 		Cursor cursor = db.rawQuery(sqlQuery, null);
 
 		while (cursor.moveToNext()) {
-			Feedback feedback = new Feedback(cursor.getInt(0), cursor.getString(1));
+			ChartModel feedback = new ChartModel(cursor.getInt(0), cursor.getString(1));
 			feedbacks.add(feedback);
 		}
 

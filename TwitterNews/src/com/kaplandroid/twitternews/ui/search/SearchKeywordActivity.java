@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.kaplandroid.twitternews.AppData;
 import com.kaplandroid.twitternews.R;
+import com.kaplandroid.twitternews.ui.statistics.StatisticMainActivity;
 
 /**
  * 
@@ -48,9 +49,8 @@ public class SearchKeywordActivity extends Activity implements OnClickListener {
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		if (item.getItemId() == R.id.action_chart) {
-			// TODO open chart activity
 
-			Toast.makeText(SearchKeywordActivity.this, "TODO open chart activity", Toast.LENGTH_LONG).show();
+			startActivity(new Intent(this, StatisticMainActivity.class));
 		}
 		return super.onOptionsItemSelected(item);
 

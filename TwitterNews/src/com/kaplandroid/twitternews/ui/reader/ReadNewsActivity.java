@@ -18,6 +18,7 @@ import com.kaplandroid.twitternews.AppData;
 import com.kaplandroid.twitternews.R;
 import com.kaplandroid.twitternews.db.MobilikeDBHelper;
 import com.kaplandroid.twitternews.ui.search.SearchKeywordActivity;
+import com.kaplandroid.twitternews.ui.statistics.StatisticMainActivity;
 
 /**
  * 
@@ -111,9 +112,8 @@ public class ReadNewsActivity extends Activity implements OnClickListener {
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		if (item.getItemId() == R.id.action_chart) {
-			// TODO open chart activity
 
-			Toast.makeText(ReadNewsActivity.this, "TODO open chart activity", Toast.LENGTH_LONG).show();
+			startActivity(new Intent(this, StatisticMainActivity.class));
 		} else if (item.getItemId() == R.id.action_pen) {
 			Intent i = new Intent(this, SearchKeywordActivity.class);
 			i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

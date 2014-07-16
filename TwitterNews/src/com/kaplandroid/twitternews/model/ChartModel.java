@@ -6,27 +6,22 @@ package com.kaplandroid.twitternews.model;
  * 
  */
 public class ChartModel {
-	private String name;
-	private double value;
 
-	//
+	private int totalCount;
+	private String feedbackName;
 
-	//
-
-	public String getName() {
-		return name;
+	public ChartModel(int totalCount, String feedbackName) {
+		super();
+		this.totalCount = totalCount;
+		this.feedbackName = feedbackName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public int getTotalCount() {
+		return totalCount;
 	}
 
-	public double getValue() {
-		return value;
-	}
-
-	public void setValue(double value) {
-		this.value = value;
+	public String getFeedbackName() {
+		return feedbackName;
 	}
 
 }
